@@ -9,6 +9,9 @@ const port = 3000;
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const users = [
   {
     id: 1,
@@ -32,6 +35,24 @@ app.get("/", (req, res) => {
 
 app.get("/users", async (req, res) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  res.render("users", {
+    title: "users",
+    users,
+  });
+});
+
+app.post("/users", async (req, res) => {
+  const { name } = req.body;
+
+  const user = {
+    id: users.length + 1,
+    name,
+  };
+
+  users.push(user);
+
+  // todo: need to try just serving up the new user
 
   res.render("users", {
     title: "users",

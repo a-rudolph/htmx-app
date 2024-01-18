@@ -24,6 +24,11 @@
       <img aria-hidden="true" src="/img/loader.svg" class="htmx-indicator" />
     </button>
     <div id="users"></div>
+
+    <form hx-post="/users" hx-target="#users">
+      <input type="text" placeholder="name" name="name" />
+      <button type="submit">Submit</button>
+    </form>
   </body>
 
   <script
