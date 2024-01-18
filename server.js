@@ -1,4 +1,4 @@
-require("./reload-magic.js");
+const { reloadMagic } = require("./reload-magic.js");
 
 const express = require("express");
 const path = require("path");
@@ -37,6 +37,10 @@ app.get("/users", async (req, res) => {
     title: "users",
     users,
   });
+});
+
+app.get("/reload-magic", (req, res) => {
+  res.send(reloadMagic);
 });
 
 app.listen(port, () => {

@@ -6,6 +6,8 @@ const path = require("path");
 
 const port = 3232;
 
+const watchedDirectory = "views";
+
 const debug = false;
 
 const logger = {
@@ -40,6 +42,16 @@ wss.on("connection", (ws) => {
 });
 
 function watchDirectory(directoryPath) {
+  // Resolve and normalize the path
+  const resolvedPath = path.resolve(directoryPath);
+  const normalizedPath = path.normalize(resolvedPath);
+
+  // Ensure the path is within the intended directory
+  if (!normalizedPath.startsWith(path.resolve(watchedDirectory))) {
+    logger.error(`Invalid directory: ${normalizedPath}`);
+    return;
+  }
+
   // Watch the directory itself
   fs.watch(directoryPath, (eventType, filename) => {
     logger.debug(`event type is: ${eventType}`);
@@ -80,8 +92,31 @@ function watchDirectory(directoryPath) {
 }
 
 // Start watching the directory
-watchDirectory("views");
+watchDirectory(watchedDirectory);
 
 server.listen(port, () => {
   logger.log(`Listening on http://localhost:${port}`);
 });
+
+module.exports = {
+  reloadMagic: `
+  <script>
+    const socket = new WebSocket("ws://localhost:${port}");
+
+    socket.addEventListener("open", (event) => {
+      console.log("[wss] Connected to server");
+      socket.send("Client connected");
+    });
+
+    socket.addEventListener("message", (event) => {
+      if (event.data === "reload-magic") {
+        console.log("[wss] Reloading page...");
+        window.location.reload();
+        return;
+      }
+
+      console.log("[wss] Message from server: ", event.data);
+    });
+  </script>
+  `,
+};
