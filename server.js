@@ -11,17 +11,14 @@ const users = [
   {
     id: 1,
     name: "John",
-    email: "",
   },
   {
     id: 2,
     name: "Jane",
-    email: "",
   },
   {
     id: 3,
     name: "Joe",
-    email: "",
   },
 ];
 
@@ -31,7 +28,9 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/users", (req, res) => {
+app.get("/users", async (req, res) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   res.render("users", {
     title: "users",
     users,
