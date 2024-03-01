@@ -2,7 +2,7 @@
   <% users.forEach(function(user) { %>
   <li>
     <div style="display: flex">
-      <div style="min-width: 120px"><%= user.name %></div>
+      <div style="min-width: 100px"><%= user.name %></div>
       <button hx-target="#users" hx-delete="/users/<%= user.id %>">x</button>
     </div>
   </li>
