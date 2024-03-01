@@ -1,4 +1,5 @@
 const { reloadMagic } = require("./reload-magic.js");
+const { connect } = require("./db");
 
 const express = require("express");
 const path = require("path");
@@ -12,21 +13,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const users = [
-  {
-    id: 1,
-    name: "John",
-  },
-  {
-    id: 2,
-    name: "Jane",
-  },
-  {
-    id: 3,
-    name: "Joe",
-  },
-];
-
 app.get("/", (req, res) => {
   res.render("index", {
     title: "index",
@@ -36,23 +22,43 @@ app.get("/", (req, res) => {
 app.get("/users", async (req, res) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
+  const db = await connect();
+
   res.render("users", {
     title: "users",
-    users,
+    users: await db.users.get(),
   });
 });
 
 app.post("/users", async (req, res) => {
   const { name } = req.body;
 
+  const db = await connect();
+
   const user = {
-    id: users.length + 1,
     name,
   };
 
-  users.push(user);
+  await db.users.post(user);
+
+  const users = await db.users.get();
 
   // todo: need to try just serving up the new user
+
+  res.render("users", {
+    title: "users",
+    users,
+  });
+});
+
+app.delete("/users/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const db = await connect();
+
+  await db.users.remove(Number(id));
+
+  const users = await db.users.get();
 
   res.render("users", {
     title: "users",

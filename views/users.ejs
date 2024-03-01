@@ -1,5 +1,10 @@
 <ol>
   <% users.forEach(function(user) { %>
-  <li><%= user.name %></li>
+  <li>
+    <div style="display: flex">
+      <div style="min-width: 120px"><%= user.name %></div>
+      <button hx-target="#users" hx-delete="/users/<%= user.id %>">x</button>
+    </div>
+  </li>
   <% }); %>
 </ol>

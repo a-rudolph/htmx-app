@@ -15,15 +15,9 @@
     <h1>Welcome to My Express App!</h1>
     <p>from the views folder</p>
     <p>hot reloading!</p>
-    <button
-      style="padding-left: 22px; display: flex; align-items: center"
-      hx-get="/users"
-      hx-target="#users"
-    >
-      Get Data
+    <div hx-trigger="load" hx-swap="innerHTML" hx-get="/users" id="users">
       <img aria-hidden="true" src="/img/loader.svg" class="htmx-indicator" />
-    </button>
-    <div id="users"></div>
+    </div>
 
     <form hx-post="/users" hx-target="#users">
       <input type="text" placeholder="name" name="name" />
